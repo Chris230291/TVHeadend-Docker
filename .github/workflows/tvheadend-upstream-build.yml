@@ -70,15 +70,9 @@ jobs:
           - arch: amd64
             platform: linux/amd64
             dockerfile: Dockerfile
-          - arch: arm64
-            platform: linux/arm64
-            dockerfile: Dockerfile.aarch64
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -146,15 +140,15 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      - name: Publish multi-arch tags
+      - name: Publish image tags
         env:
           IMAGE: chris230291/tvheadend
           COMMIT: ${{ needs.check-upstream.outputs.commit }}
         shell: bash
         run: |
           digests=("$RUNNER_TEMP"/digests/*)
-          if [[ ${#digests[@]} -ne 2 ]]; then
-            echo "Expected two architecture image digests, found ${#digests[@]}." >&2
+          if [[ ${#digests[@]} -ne 1 ]]; then
+            echo "Expected one image digest, found ${#digests[@]}." >&2
             exit 1
           fi
 
